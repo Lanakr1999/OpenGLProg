@@ -32,6 +32,8 @@ int main(int argc, char* argv[])
 	{
 		glfwSwapBuffers(window);
 		glfwPollEvents();
+		glClearColor(0.05f, 0.05f, 0.2f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT);
 	}
 	glfwTerminate();
 
