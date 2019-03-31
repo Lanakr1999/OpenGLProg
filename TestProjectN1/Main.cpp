@@ -3,10 +3,14 @@
 #include <GLFW/glfw3.h>
 
 #include <iostream>
+#include <fstream>
+#include <string>
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 
 void processInput(GLFWwindow *window);
+
+std::string shaderCode(const std::string& path);
 
 int main(int argc, char* argv[])
 
@@ -33,6 +37,22 @@ int main(int argc, char* argv[])
 	}
 	glViewport(0, 0, 800, 600);
 
+	float vertices[] = {
+		-0.5f, -0.5f,  0.0f,
+		 0.5f, -0.5f,  0.0f,
+		 0.0f,  0.5f,  0.0f
+	};
+	unsigned int VBO;
+	glGenBuffers(1, &VBO);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+	unsigned int vertexShader;
+	vertexShader = glCreateShader(GL_VERTEX_SHADER);
+	auto codeshader = shaderCode("shders/lesson1.vert").c_str();
+	glShaderSource(vertexShader, 1, &codeshader, NULL);
+	glCompileShader(vertexShader);
+	
 	// Rendering cycle.
 	while(!glfwWindowShouldClose(window))
 	{
@@ -40,7 +60,7 @@ int main(int argc, char* argv[])
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
-		glClearColor(0.05f, 0.05f, 0.2f, 1.0f);
+		glClearColor(0.1f, 0.05f, 0.5f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 	}
 	glfwTerminate();
@@ -64,4 +84,24 @@ void processInput(GLFWwindow *window)
 		glfwSetWindowShouldClose(window, true); 
 		std::cout << "Escape Key Was Pushed" << std::endl;
 	}
+}
+
+std::string shaderCode(const std::string& path)
+{
+	std::string code;
+
+	std::fstream shaderFile;
+	shaderFile.open(path, std::ios_base::in | std::ios_base::app);
+	
+	if (shaderFile.is_open())
+	{
+		std::string line;
+		while (std::getline(shaderFile, line))
+		{
+			code += line;
+			code += "\n";
+		}
+	}
+
+	return code;
 }
