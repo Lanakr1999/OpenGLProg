@@ -49,9 +49,34 @@ int main(int argc, char* argv[])
 
 	unsigned int vertexShader;
 	vertexShader = glCreateShader(GL_VERTEX_SHADER);
-	auto codeshader = shaderCode("shders/lesson1.vert").c_str();
-	glShaderSource(vertexShader, 1, &codeshader, NULL);
+	auto codeVertStr = shaderCode("shaders/lesson1.vert");
+	auto codeVert = codeVertStr.c_str();
+	std::cout << codeVert << std::endl;
+	glShaderSource(vertexShader, 1, &codeVert, NULL);
 	glCompileShader(vertexShader);
+	int success;
+	char infoLog[512];
+	glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
+	if (!success)
+	{
+		glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
+		std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
+	}
+
+	unsigned int fragmentShader;
+	fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+	auto codeFragStr = shaderCode("shaders/lesson1.frag");
+	auto codeFrag = codeFragStr.c_str();
+	std::cout << codeFrag << std::endl;
+	glShaderSource(fragmentShader, 1, &codeFrag, NULL);
+	glCompileShader(fragmentShader);
+	glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
+	if (!success)
+	{
+		glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
+		std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
+	}
+	
 	
 	// Rendering cycle.
 	while(!glfwWindowShouldClose(window))
