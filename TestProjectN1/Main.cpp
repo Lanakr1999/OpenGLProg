@@ -38,9 +38,14 @@ int main(int argc, char* argv[])
 	glViewport(0, 0, 800, 600);
 
 	float vertices[] = {
-		-0.7f, -0.3f,  0.0f,
-		 0.9f, -0.1f,  0.0f,
-		 0.0f,  0.5f,  0.0f
+		 0.5f,  0.5f, 0.0f,
+		 0.5f, -0.5f, 0.0f,
+		-0.5f, -0.5f, 0.0f,
+		-0.5f,  0.5f, 0.0f,
+	};
+	unsigned int indices[] = {
+		0, 1, 3, // first triangle
+		1, 2, 3 // second triangle
 	};
 
 	unsigned int VAO;
@@ -53,6 +58,11 @@ int main(int argc, char* argv[])
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
+
+	unsigned int EBO;
+	glGenBuffers(1, &EBO);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
 	glBindVertexArray(VAO);
 
@@ -101,6 +111,9 @@ int main(int argc, char* argv[])
 	glDeleteShader(vertexShader);
 	glDeleteShader(fragmentShader);
 
+	// uncomment if wireframe mode is necessary
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
 	// Rendering cycle.
 	while(!glfwWindowShouldClose(window))
 	{
@@ -112,7 +125,7 @@ int main(int argc, char* argv[])
 		glClear(GL_COLOR_BUFFER_BIT);
 		glUseProgram(shaderProgram);
 		glBindVertexArray(VAO);
-		glDrawArrays(GL_TRIANGLES, 0, 3);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 	}
 	glfwTerminate();
 
